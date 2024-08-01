@@ -13,6 +13,10 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@langchain/community": "^0.2.22",
+    "@langchain/openai": "^0.2.5",
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5",
     "langchain": "^0.2.12"
   }
 }
