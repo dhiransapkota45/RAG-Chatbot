@@ -44,7 +44,7 @@
     zod "^3.22.3"
     zod-to-json-schema "^3.22.5"
 
-"@langchain/core@>0.2.0 <0.3.0", "@langchain/core@>=0.2.11 <0.3.0", "@langchain/core@>=0.2.16 <0.3.0":
+"@langchain/core@>0.2.0 <0.3.0", "@langchain/core@>=0.2.11 <0.3.0", "@langchain/core@>=0.2.16 <0.3.0", "@langchain/core@^0.2.18":
   version "0.2.18"
   resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.2.18.tgz#1ac4f307fa217ab3555c9634147a6c4ad9826092"
   integrity sha512-ru542BwNcsnDfjTeDbIkFIchwa54ctHZR+kVrC8U9NPS9/36iM8p8ruprOV7Zccj/oxtLE5UpEhV+9MZhVcFlA==
