@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { config } from "./config";
+import { config } from "./config/config";
 import { PromptTemplate } from "@langchain/core/prompts";
 import {
   RunnableSequence,

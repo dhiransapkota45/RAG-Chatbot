@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Redirecting...</h1>
+    <script>
+      console.log(window.location.hash);
+      const data = window.location.hash.split("#")[1];
+      fetch("http://localhost:3000/auth/google/callback?" + data, {
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // window.location.href = "http://localhost:3000";
+        });
+    </script>
+  </body>
+</html>

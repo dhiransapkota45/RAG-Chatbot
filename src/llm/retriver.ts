@@ -1,6 +1,6 @@
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { createClient } from "@supabase/supabase-js";
-import { config } from "./config";
+import { config } from "../config/config";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 
 const getRetriver = () => {

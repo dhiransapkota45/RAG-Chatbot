@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { config } from "./config";
+import { config } from "../config/config";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import getRetriver from "./retriver";
 import combineNearestVector from "./combineNearestVector";

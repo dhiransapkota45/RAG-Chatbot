@@ -33,7 +33,6 @@ chatForm.addEventListener("submit", async (e) => {
       break;
     }
     const chunk = decoder.decode(value, { stream: true });
-    // console.log(chunk);
     chatResponseElement.contentHolder.textContent += chunk;
   }
 });
@@ -78,3 +77,31 @@ const createResponseElement = () => {
     contentHolder,
   };
 };
+
+//login with google using supabase
+const SUPABASE_URL = "https://jgwtkpuyrdrfqcrdzvdg.supabase.co";
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impnd3RrcHV5cmRyZnFjcmR6dmRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI0ODgxNDEsImV4cCI6MjAzODA2NDE0MX0.5XyAvO6OOs7lr88Q1b1hAJeqdSedm-_GYG7O2a8ZyPI";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const loginBtn = document.getElementById("google-login");
+loginBtn.addEventListener("click", async () => {
+  const { user, session, error } = await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "http://localhost:3000/redirect",
+    },
+  });
+  console.log(user, session, error);
+});
+
+supabaseClient
+  .from("Users")
+  .select("*")
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
