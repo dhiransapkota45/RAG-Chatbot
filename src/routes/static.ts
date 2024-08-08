@@ -1,14 +1,18 @@
 import { Router } from "express";
 import path from "path";
+import { config } from "../config/config";
 
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/index.html"));
+  res.render("index", {
+    SUPABASE_URL: config.SUPABASE_URL,
+    SUPABASE_KEY: config.SUPABASE_KEY,
+  });
 });
 
 router.get("/redirect", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/redirect.html"));
+  res.render("redirect");
 });
 
 export default router;
