@@ -8,12 +8,16 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
+import { IterableReadableStream } from "@langchain/core/utils/stream";
 
-const promptParser = async () => {
+export const promptParser: (
+  question: string
+) => Promise<IterableReadableStream<string>> = async (question) => {
   const llmOpenAI = new ChatOpenAI({
     openAIApiKey: config.OPENAI_API_KEY,
   });
 
+  //question chain
   const questionTemplate = `Convert the following question into standalone Question: {question} Standalone question:`;
   const questionPrompt = PromptTemplate.fromTemplate(questionTemplate);
   const questionChain = RunnableSequence.from([
@@ -22,6 +26,7 @@ const promptParser = async () => {
     new StringOutputParser(),
   ]);
 
+  //retriver chain to minimize the token usage
   const retriverChain = RunnableSequence.from([
     (data) => data.standaloneQuestion,
     { data: getRetriver() },
@@ -29,19 +34,18 @@ const promptParser = async () => {
       return combineNearestVector(data?.data);
     },
   ]);
+
+  //answer chain
   const answerTemplate = `You are a helpful and enthusiastic chat bot who can answer the provided question based on context provided. Try to find the answer in the context. If you really can't find the answer, you can say "I'm sorry, I don't know answer to that". Don't try to make up the answer. Always speak as if you are chatting with a friend.
   context : {context}
   question : {question}
   answer:`;
-
   const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
   const answerChain = RunnableSequence.from([
     answerPrompt,
     llmOpenAI,
     new StringOutputParser(),
   ]);
-
-  let conversationHistory: string[] = [];
 
   //using runnablesequence which is more readable
   const chain = RunnableSequence.from([
@@ -55,19 +59,11 @@ const promptParser = async () => {
     },
     answerChain,
   ]);
-
-  const question: string = "What is the popular backend library?";
-  const response = await chain.invoke({
+  const response = await chain.stream({
     question,
   });
-
-  conversationHistory.push(question);
-  conversationHistory.push(response);
-
-  console.log(response);
+  return response;
 };
-
-promptParser();
 
 //using pipeline
 // const chain = userPrompt
