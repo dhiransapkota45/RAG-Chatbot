@@ -32,8 +32,9 @@
       class="h-full overflow-hidden w-full mx-auto p-4 flex flex-col flex-grow border rounded-lg bg-white"
     >
       <!-- Chat Header -->
-      <div class="border-b pb-2 mb-4">
+      <div class="border-b pb-2 mb-4 flex justify-between">
         <h1 class="text-xl font-semibold">LLM Messaging</h1>
+        <div class="user-profile"></div>
       </div>
 
       <!-- Chat Messages -->
@@ -46,6 +47,7 @@
 
           <div class="flex items-start">
             <div
+              id="start-chat"
               class="text-sm bg-gray-300 rounded-lg px-4 py-2 max-w-xs shadow"
             >
               Hello! How can I help you today?
@@ -81,26 +83,58 @@
 
       const loginBtn = document.getElementById("google-login");
       loginBtn.addEventListener("click", async () => {
-        const { user, session, error } =
-          await supabaseClient.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-              redirectTo: "http://localhost:3000/redirect",
-            },
-          });
+        await supabaseClient.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: "http://localhost:3000/auth/callback",
+          },
+        });
       });
 
-      //check if user is logged in
-      const checkUser = async () => {
-        const {
-          data: { session },
-        } = await supabaseClient.auth
-          .getSession()
-          .then((data) => console.log(data));
-        console.log(session);
-      };
+      async function getUserStatus() {
+        try {
+          const {
+            data: { session },
+          } = await supabaseClient.auth.getSession();
+          console.log("Session:", session);
+          if (session && session.access_token && session.user) {
+            return session.user;
+          } else {
+            throw new Error("No active session");
+          }
+        } catch (error) {
+          console.error("Error checking login status:", error);
+          return false;
+        }
+      }
 
-      checkUser();
+      getUserStatus().then((response) => {
+        if (!response) return;
+        //add user name to the chat
+        const startchat = document.getElementById("start-chat");
+        startchat.innerHTML = `Hi ${response.user_metadata.full_name}! How can I help you today?`;
+
+        //access user metadata
+        const userprofile = document.querySelector(".user-profile");
+        userprofile.classList.add("flex", "items-center", "gap-2");
+        userprofile.innerHTML = `<img src="${response.user_metadata.avatar_url}" class="w-8 h-8 rounded-full" alt="User Profile" />`;
+
+        //add logout button
+        const logoutBtn = document.createElement("button");
+        logoutBtn.innerHTML = "Logout";
+        logoutBtn.classList.add(
+          "bg-red-500",
+          "text-white",
+          "rounded-lg",
+          "px-4",
+          "py-2"
+        );
+        logoutBtn.addEventListener("click", async () => {
+          await supabaseClient.auth.signOut();
+          window.location.reload();
+        });
+        userprofile.appendChild(logoutBtn);
+      });
     </script>
     <script src="js/script.js"></script>
   </body>
