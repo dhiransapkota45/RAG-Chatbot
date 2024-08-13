@@ -88,8 +88,19 @@
               redirectTo: "http://localhost:3000/redirect",
             },
           });
-        console.log(user, session, error);
       });
+
+      //check if user is logged in
+      const checkUser = async () => {
+        const {
+          data: { session },
+        } = await supabaseClient.auth
+          .getSession()
+          .then((data) => console.log(data));
+        console.log(session);
+      };
+
+      checkUser();
     </script>
     <script src="js/script.js"></script>
   </body>

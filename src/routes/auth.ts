@@ -10,7 +10,7 @@ router.post("/google/callback", (req, res) => {
   res.cookie("refresh_token", req.query.refresh_token, {
     httpOnly: true,
   });
-  return res.json({ data: "success" });
+  return res.status(200).json({ message: "success" });
 });
 
 export default router;
