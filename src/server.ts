@@ -4,6 +4,7 @@ import { config } from "./config/config";
 import StaticRoutes from "./routes/static";
 import AuthRoutes from "./routes/auth";
 import LlmRoutes from "./routes/llm";
+import ConversationRoutes from "./routes/conversation";
 const app = express();
 const port = config.PORT;
 
@@ -16,6 +17,7 @@ app.use(express.static(path.join(__dirname, "../views")));
 app.use("/", StaticRoutes);
 app.use("/auth", AuthRoutes);
 app.use("/api", LlmRoutes);
+app.use("/conversation", ConversationRoutes);
 
 app.listen(port, () => {
   console.info(`Server running on http://localhost:${port}`);

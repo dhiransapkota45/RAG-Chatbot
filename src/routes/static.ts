@@ -11,8 +11,4 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/redirect", (req, res) => {
-  res.render("redirect");
-});
-
 export default router;

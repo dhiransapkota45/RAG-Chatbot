@@ -20,10 +20,8 @@ router.post("/google/callback", (req, res) => {
 });
 
 router.get("/callback", async function (req, res) {
-  console.log("reached here");
   const code = req.query.code as string;
   const next = (req.query.next ?? "/") as string;
-  console.log("code", code);
   if (code) {
     const supabase = createServerClient(
       config.SUPABASE_URL,
@@ -46,8 +44,6 @@ router.get("/callback", async function (req, res) {
     );
     await supabase.auth.exchangeCodeForSession(code);
   }
-
-  console.log("then here");
 
   res.redirect(303, `/${next?.slice(1)}`);
 });

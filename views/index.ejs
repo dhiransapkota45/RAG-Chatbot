@@ -98,7 +98,7 @@
           } = await supabaseClient.auth.getSession();
           console.log("Session:", session);
           if (session && session.access_token && session.user) {
-            return session.user;
+            return session;
           } else {
             throw new Error("No active session");
           }
@@ -109,15 +109,16 @@
       }
 
       getUserStatus().then((response) => {
-        if (!response) return;
+        if (!response?.user) return;
+        console.log("User:", response);
         //add user name to the chat
         const startchat = document.getElementById("start-chat");
-        startchat.innerHTML = `Hi ${response.user_metadata.full_name}! How can I help you today?`;
+        startchat.innerHTML = `Hi ${response.user.user_metadata.full_name}! How can I help you today?`;
 
         //access user metadata
         const userprofile = document.querySelector(".user-profile");
         userprofile.classList.add("flex", "items-center", "gap-2");
-        userprofile.innerHTML = `<img src="${response.user_metadata.avatar_url}" class="w-8 h-8 rounded-full" alt="User Profile" />`;
+        userprofile.innerHTML = `<img src="${response.user.user_metadata.avatar_url}" class="w-8 h-8 rounded-full" alt="User Profile" />`;
 
         //add logout button
         const logoutBtn = document.createElement("button");

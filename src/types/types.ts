@@ -1,3 +1,6 @@
+import { User } from "@supabase/supabase-js";
+import { Request } from "express";
+
 export type queryType = {
   access_token: string;
   refresh_token: string;
@@ -6,3 +9,5 @@ export type queryType = {
   provider_token: string;
   token_type: string;
 };
+
+export type TAuthenticatedRequest = Request & { user?: User };
