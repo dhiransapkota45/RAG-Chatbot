@@ -108,7 +108,7 @@
         }
       }
 
-      getUserStatus().then((response) => {
+      getUserStatus().then(async(response) => {
         if (!response?.user) return;
         console.log("User:", response);
         //add user name to the chat
@@ -135,6 +135,16 @@
           window.location.reload();
         });
         userprofile.appendChild(logoutBtn);
+
+
+        //load chat history
+        const conversationRaw = await fetch("http://localhost:3000/conversation", {
+          headers : {
+            "authorization" : `Bearer ${response?.access_token}`
+          }
+        })
+        const conversation = await conversationRaw.json()
+        console.log(conversation, 'conversation')
       });
     </script>
     <script src="js/script.js"></script>

@@ -1,29 +1,16 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 import { promptParser } from "../llm";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { config } from "../config/config";
+import { getConversation, postConversation } from "../services/conversation";
+import { TAuthenticatedRequest, TConversation } from "../types/types";
+import { UUID } from "crypto";
+import { postMessage } from "../services/message";
+import authMiddleware from "../middleware/authmiddleware";
+import { conversationWithLlm } from "../controllers/llm";
 const router = Router();
 
-router.post("/prompt", async (req, res) => {
-  if (!req.body.prompt) {
-    return res.status(400).json({ error: "Prompt is required" });
-  }
-
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
-  });
-
-  const stream = await promptParser(req.body.prompt);
-
-  for await (const chunk of stream) {
-    res.write(`${chunk}`);
-  }
-  res.end();
-  return;
-});
+router.post("/prompt", authMiddleware, conversationWithLlm);
 
 router.get("/getgemini", async (req, res) => {
   try {
