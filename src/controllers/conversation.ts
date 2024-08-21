@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { Relations } from "../data/constants";
 import { supabase } from "../config/supabase";
 import { TAuthenticatedRequest } from "../types/types";

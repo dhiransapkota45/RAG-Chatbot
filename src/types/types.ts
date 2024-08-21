@@ -11,3 +11,5 @@ export type queryType = {
 };
 
 export type TAuthenticatedRequest = Request & { user?: User };
+
+// export type TMessage
