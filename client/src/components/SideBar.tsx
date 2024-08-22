@@ -1,7 +1,17 @@
+import { useEffect } from "react";
 import { AuthContextType, useAuthContext } from "../context/AuthContext";
+import { get } from "../api/api";
+import { TConversation } from "../types/types";
 
 const SideBar = () => {
   const { login, isLoggedin } = useAuthContext() as AuthContextType;
+  useEffect(()=>{
+    const getConversationList = async()=>{
+      const response = await get<TConversation[]>("conversation");
+      console.log(response)
+    }
+    getConversationList();
+  }, [isLoggedin]);
   return (
     <div className="w-80 shadow-md bg-gray-100">
       {isLoggedin ? (
