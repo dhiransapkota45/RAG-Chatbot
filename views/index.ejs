@@ -28,6 +28,7 @@
         Login to save chat history
       </button>
     </div>
+
     <div
       class="h-full overflow-hidden w-full mx-auto p-4 flex flex-col flex-grow border rounded-lg bg-white"
     >
@@ -98,6 +99,12 @@
           } = await supabaseClient.auth.getSession();
           console.log("Session:", session);
           if (session && session.access_token && session.user) {
+            //appending access_token to docuemnt so that another js file can accessit, bad approach need to revise this idea
+            const tokenelement = document.createElement("div");
+            tokenelement.textContent = session?.access_token;
+            tokenelement.style.display = "none";
+            tokenelement.id = "token_element";
+            document.body.appendChild(tokenelement);
             return session;
           } else {
             throw new Error("No active session");
@@ -108,7 +115,7 @@
         }
       }
 
-      getUserStatus().then(async(response) => {
+      getUserStatus().then(async (response) => {
         if (!response?.user) return;
         console.log("User:", response);
         //add user name to the chat
@@ -136,15 +143,17 @@
         });
         userprofile.appendChild(logoutBtn);
 
-
         //load chat history
-        const conversationRaw = await fetch("http://localhost:3000/conversation", {
-          headers : {
-            "authorization" : `Bearer ${response?.access_token}`
+        const conversationRaw = await fetch(
+          "http://localhost:3000/conversation",
+          {
+            headers: {
+              authorization: `Bearer ${response?.access_token}`,
+            },
           }
-        })
-        const conversation = await conversationRaw.json()
-        console.log(conversation, 'conversation')
+        );
+        const conversation = await conversationRaw.json();
+        console.log(conversation, "conversation");
       });
     </script>
     <script src="js/script.js"></script>

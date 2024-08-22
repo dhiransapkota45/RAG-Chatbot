@@ -1,4 +1,4 @@
 export const Relations = {
   CONVERSATION: "Conversation",
-  MESSAGE: "Message",
+  MESSAGE: "Chat",
 };

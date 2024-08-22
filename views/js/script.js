@@ -6,6 +6,30 @@ chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = chatInput.value;
 
+  //check if user is authenticated or not
+  //creating conversation first if there is not conversation id availble
+
+  const conversationId = location.hash?.split("#")[1] ?? null;
+  if (!conversationId) {
+    const responseRaw = await fetch("http://localhost:3000/conversation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${
+          document.getElementById("token_element").textContent
+        }`,
+      },
+      body: JSON.stringify({
+        title: text,
+      }),
+    });
+
+    const response = await responseRaw.json();
+    if (response?.message) {
+      location.hash = response?.conversation?.id;
+    }
+  }
+
   chatMessages.insertBefore(promptElement(text), chatMessages.firstChild);
   chatForm.reset();
   chatMessages.scrollTop = 100;
@@ -15,8 +39,14 @@ chatForm.addEventListener("submit", async (e) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      authorization: `Bearer ${
+        document.getElementById("token_element").textContent
+      }`,
     },
-    body: JSON.stringify({ prompt: text }),
+    body: JSON.stringify({
+      prompt: text,
+      conversationId,
+    }),
   });
   const reader = response.body.getReader();
   const decoder = new TextDecoder();

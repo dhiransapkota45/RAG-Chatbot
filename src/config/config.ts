@@ -10,4 +10,5 @@ export const config = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
   GEMINI_API_KEY: process.env.GEMINI_API_KEY ?? "",
   PORT: process.env.PORT ?? "3000",
+  BASEURL: process.env.BASEURL ?? "http://localhost:3000/",
 };

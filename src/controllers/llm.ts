@@ -4,6 +4,7 @@ import { UUID } from "crypto";
 import { getConversation, postConversation } from "../services/conversation";
 import { promptParser } from "../llm";
 import { postMessage } from "../services/message";
+import { config } from "../config/config";
 
 export const conversationWithLlm = async (
   req: TAuthenticatedRequest,
@@ -20,19 +21,9 @@ export const conversationWithLlm = async (
     "Access-Control-Allow-Origin": "*",
   });
 
-  //create a conversation if does not exist already
   const conversationId = req?.body?.conversationId;
-  let conversation: TConversation | null;
-  if (!conversationId) {
-    conversation = await postConversation({
-      title: req.body.title,
-      user: req?.user?.id as UUID,
-    });
-  } else {
-    conversation = await getConversation(conversationId);
-  }
 
-  console.log(conversation, "conversation created");
+  const conversation = await getConversation(conversationId);
 
   const stream = await promptParser(req.body.prompt);
 
@@ -55,9 +46,6 @@ export const conversationWithLlm = async (
         message: llmResponse,
       },
     ]));
-
-  res.json({ conversationid: conversation?.id });
-  console.log(llmResponse);
   res.end();
   return;
 };

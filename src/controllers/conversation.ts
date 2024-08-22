@@ -2,6 +2,8 @@ import { Response } from "express";
 import { Relations } from "../data/constants";
 import { supabase } from "../config/supabase";
 import { TAuthenticatedRequest } from "../types/types";
+import { postConversation as postConversationService } from "../services/conversation";
+import { config } from "../config/config";
 
 export const getAllConversation = async (
   req: TAuthenticatedRequest,
@@ -19,15 +21,13 @@ export const postConversation = async (
   res: Response
 ) => {
   const { body } = req;
-  const { error, data } = await supabase
-    .from(Relations.CONVERSATION)
-    .insert({ user: req?.user?.id, ...body });
-  if (error) {
-    throw new Error(`${error.code} | ${error.message}`);
-  }
-  res.status(200).json({
-    message: "Conversation created successfully",
+  const conversation = await postConversationService({
+    user: req?.user?.id,
+    ...body,
   });
+  return res
+    .status(200)
+    .json({ message: "conversation created successfully", conversation });
 };
 
 export const deleteConversation = async (

@@ -7,9 +7,11 @@ export const postMessage: (
 ) => Promise<TMessage[] | null> = async (payload) => {
   const { data, error } = await supabase
     .from(Relations.MESSAGE)
-    .insert(payload);
+    .insert(payload)
+    .select("*");
 
   if (error) {
+    console.log(error);
     throw new Error(`${error.code} | ${error.message}`);
   }
 

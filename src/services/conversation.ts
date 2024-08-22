@@ -5,15 +5,16 @@ import { TConversation, TConversationPayload } from "../types/types";
 
 export const postConversation: (
   conversationData: TConversationPayload
-) => Promise<TConversation | null> = async (conversationData) => {
+) => Promise<TConversation> = async (conversationData) => {
   const { error, data } = await supabase
     .from(Relations.CONVERSATION)
-    .insert(conversationData);
+    .insert(conversationData)
+    .select("*")
+    .single();
 
   if (error) {
     throw new Error(`${error.code} | ${error.message}`);
   }
-
   return data;
 };
 
