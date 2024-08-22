@@ -9,7 +9,7 @@ chatForm.addEventListener("submit", async (e) => {
   //check if user is authenticated or not
   //creating conversation first if there is not conversation id availble
 
-  const conversationId = location.hash?.split("#")[1] ?? null;
+  let conversationId = location.hash?.split("#")[1] ?? null;
   if (!conversationId) {
     const responseRaw = await fetch("http://localhost:3000/conversation", {
       method: "POST",
@@ -27,6 +27,7 @@ chatForm.addEventListener("submit", async (e) => {
     const response = await responseRaw.json();
     if (response?.message) {
       location.hash = response?.conversation?.id;
+      conversationId = response?.conversation?.id;
     }
   }
 
@@ -40,7 +41,7 @@ chatForm.addEventListener("submit", async (e) => {
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${
-        document.getElementById("token_element").textContent
+        document.getElementById("token_element")?.textContent
       }`,
     },
     body: JSON.stringify({

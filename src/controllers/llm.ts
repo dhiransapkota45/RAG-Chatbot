@@ -4,7 +4,6 @@ import { UUID } from "crypto";
 import { getConversation, postConversation } from "../services/conversation";
 import { promptParser } from "../llm";
 import { postMessage } from "../services/message";
-import { config } from "../config/config";
 
 export const conversationWithLlm = async (
   req: TAuthenticatedRequest,

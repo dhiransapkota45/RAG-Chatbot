@@ -21,6 +21,12 @@
 
   <body class="bg-gray-100 h-screen flex">
     <div class="w-96 flex justify-center items-center">
+      <div
+        style="display: none"
+        id="conversationlist"
+        class="h-full w-full p-5"
+      ></div>
+
       <button
         id="google-login"
         class="px-4 py-2 rounded-lg bg-blue-500 text-white"
@@ -115,9 +121,54 @@
         }
       }
 
+      const loadConversationList = async (token) => {
+        const conversation = await fetch("http://localhost:3000/conversation", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        });
+
+        return await conversation.json();
+      };
+
+      const loadConversationListAndAppend = async (response) => {
+        const isUserAuthenticated = response?.access_token;
+        if (isUserAuthenticated) {
+          const conversationContainer =
+            document.getElementById("conversationlist");
+          document.getElementById("google-login").style.display = "none";
+          conversationContainer.style.display = "block";
+          conversationContainer.classList.add("space-y-2");
+          const conversations = await loadConversationList(isUserAuthenticated);
+          conversations.forEach((element) => {
+            conversationContainer.appendChild(
+              conversationElement(element?.title)
+            );
+          });
+        }
+      };
+
+      const conversationElement = (title) => {
+        const conversationDiv = document.createElement("div");
+        conversationDiv.classList.add(
+          "border",
+          "border-blue-400",
+          "bg-blue-300",
+          "p-2",
+          "rounded-md"
+        );
+        conversationDiv.textContent = title;
+        return conversationDiv;
+      };
+
+      getUserStatus().then((response) =>
+        loadConversationListAndAppend(response)
+      );
+
       getUserStatus().then(async (response) => {
         if (!response?.user) return;
-        console.log("User:", response);
         //add user name to the chat
         const startchat = document.getElementById("start-chat");
         startchat.innerHTML = `Hi ${response.user.user_metadata.full_name}! How can I help you today?`;
@@ -142,18 +193,6 @@
           window.location.reload();
         });
         userprofile.appendChild(logoutBtn);
-
-        //load chat history
-        const conversationRaw = await fetch(
-          "http://localhost:3000/conversation",
-          {
-            headers: {
-              authorization: `Bearer ${response?.access_token}`,
-            },
-          }
-        );
-        const conversation = await conversationRaw.json();
-        console.log(conversation, "conversation");
       });
     </script>
     <script src="js/script.js"></script>
