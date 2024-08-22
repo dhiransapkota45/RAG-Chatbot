@@ -121,7 +121,7 @@ const Chat = () => {
     <div className=" h-full flex-col-reverse flex gap-3 overflow-auto">
       {chatdata?.map((chat) => {
         return (
-          <div className={`flex  ${
+          <div key={chat.id} className={`flex  ${
                 chat.name === "assistant" ? "" : "justify-end"
               }`}>
             <div
