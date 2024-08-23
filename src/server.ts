@@ -6,6 +6,7 @@ import AuthRoutes from "./routes/auth";
 import LlmRoutes from "./routes/llm";
 import ConversationRoutes from "./routes/conversation";
 import MessageRoutes from "./routes/message";
+import cors from "cors";
 
 const app = express();
 const port = config.PORT;
@@ -13,6 +14,11 @@ const port = config.PORT;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 // app.use(express.static(path.join(__dirname, "../client")));
 app.use(express.static(path.join(__dirname, "../views")));
 
