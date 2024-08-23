@@ -1,7 +1,6 @@
 import { Response } from "express";
-import { TAuthenticatedRequest, TConversation } from "../types/types";
-import { UUID } from "crypto";
-import { getConversation, postConversation } from "../services/conversation";
+import { TAuthenticatedRequest } from "../types/types";
+import { getConversation } from "../services/conversation";
 import { promptParser } from "../llm";
 import { postMessage } from "../services/message";
 
@@ -22,7 +21,8 @@ export const conversationWithLlm = async (
 
   const conversationId = req?.body?.conversationId;
 
-  const conversation = await getConversation(conversationId);
+  const conversation =
+    conversationId && (await getConversation(conversationId));
 
   const stream = await promptParser(req.body.prompt);
 
