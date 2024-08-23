@@ -8,9 +8,10 @@ import { UUID } from "crypto";
 import { postMessage } from "../services/message";
 import authMiddleware from "../middleware/authmiddleware";
 import { conversationWithLlm } from "../controllers/llm";
+import asyncUtil from "../middleware/globalError";
 const router = Router();
 
-router.post("/prompt", authMiddleware, conversationWithLlm);
+router.post("/prompt", authMiddleware, asyncUtil(conversationWithLlm));
 
 router.get("/getgemini", async (req, res) => {
   try {
