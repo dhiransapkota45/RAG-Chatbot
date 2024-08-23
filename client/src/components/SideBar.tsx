@@ -1,5 +1,5 @@
 import { AuthContextType, useAuthContext } from "../context/AuthContext";
-import { get } from "../api/api";
+import { query } from "../api/api";
 import { TConversation } from "../types/types";
 import { useQuery } from "react-query";
 import { DB } from "../data/constant";
@@ -10,7 +10,7 @@ const SideBar = () => {
 
   const { data: conversation, isLoading } = useQuery(
     ["conversation", isLoggedin],
-    () => get<TConversation[]>(DB.CONVERSATION),
+    () => query<TConversation[]>(DB.CONVERSATION),
     {
       enabled: isLoggedin,
     }

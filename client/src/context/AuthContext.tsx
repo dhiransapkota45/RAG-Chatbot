@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabaseClient } from "../config/supabase";
 import { Session } from "@supabase/supabase-js";
+import { useSearchParams } from "react-router-dom";
 
 export type AuthContextType = {
   user: Session | null;
   login: () => void;
   logout: () => void;
   isLoggedin: boolean;
+  conversationId: string | null;
 };
 
 const getUserStatus = async () => {
@@ -32,6 +34,11 @@ export const useAuthContext = () => useContext(AuthContext);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [user, setUser] = useState<Session | null>(null);
+
+  //get conversation id from url
+  const [searchParams] = useSearchParams();
+  const conversationId = searchParams?.get("conversation") ?? null;
+
   useEffect(() => {
     getUserStatus().then((res) => {
       if (res) {
@@ -54,7 +61,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     location.reload();
   };
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoggedin }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, isLoggedin, conversationId }}
+    >
       {children}
     </AuthContext.Provider>
   );
