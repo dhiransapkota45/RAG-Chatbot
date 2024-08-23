@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { AuthContextType, useAuthContext } from "../context/AuthContext";
-import { TMessagePayload } from "../types/types";
-import { promptLlm } from "../api/api";
+import {
+  TConversationPayload,
+  TConversationResponse,
+  TMessagePayload,
+} from "../types/types";
+import { mutate, promptLlm } from "../api/api";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 const MessageBox = ({
   setMessages,
 }: {
   setMessages: React.Dispatch<React.SetStateAction<TMessagePayload[]>>;
 }) => {
+  const navigate = useNavigate();
   const [userInput, setUserInput] = useState("");
   const [assistantResponse, setAssistantResponse] = useState("");
   const { isLoggedin, conversationId } = useAuthContext() as AuthContextType;
 
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isLoggedin && !conversationId) {
-      console.log("now it should hit the api");
-    }
+  const startConversationLlm = (
+    conversationid: string | undefined = undefined
+  ) => {
     setMessages((prev) => [
       {
         generator: "assistant",
@@ -29,8 +34,35 @@ const MessageBox = ({
       ...prev,
     ]);
     setUserInput("");
+    const payload: TConversationPayload = {
+      prompt: userInput,
+    };
+    if (conversationid) {
+      payload["conversationId"] = conversationid;
+    }
+    promptLlm(payload, setAssistantResponse);
+  };
 
-    promptLlm(userInput, setAssistantResponse);
+  const mutateConversation = useMutation({
+    mutationFn: () =>
+      mutate<TConversationResponse>("conversation", "post", {
+        title: userInput,
+      }),
+    onSuccess: (data) => {
+      navigate(`/?conversation=${data.data.conversation.id}`);
+      startConversationLlm(data.data.conversation.id);
+    },
+  });
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isLoggedin) {
+      return startConversationLlm();
+    }
+    if (!conversationId) {
+      return mutateConversation.mutate();
+    }
+    startConversationLlm(conversationId);
   };
 
   useEffect(() => {

@@ -1,3 +1,8 @@
+export type TConversationResponse = {
+  message: string;
+  conversation: TConversation;
+};
+
 export type TConversation = {
   id: string;
   title: string;
@@ -16,4 +21,9 @@ export type TMessage = {
   created_at: string;
   generator: string;
   message: string;
+};
+
+export type TConversationPayload = {
+  prompt: string;
+  conversationId?: string;
 };

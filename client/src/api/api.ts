@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { instance } from "./instance";
 import { config } from "../config/config";
+import { TConversationPayload } from "../types/types";
 
 export const query: <T>(url: string) => Promise<AxiosResponse<T>> = async (
   url
@@ -39,7 +40,7 @@ export const mutate: <T>(
 };
 
 export const promptLlm = async (
-  prompt: string,
+  payload: TConversationPayload,
   setAssistantResponse: React.Dispatch<React.SetStateAction<string>>
 ) => {
   try {
@@ -53,7 +54,7 @@ export const promptLlm = async (
     const response = await fetch(`${config.BACKENDURL}/api/prompt`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify(payload),
     });
     const reader = response?.body?.getReader();
     const decoder = new TextDecoder();
