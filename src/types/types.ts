@@ -33,3 +33,8 @@ export type TConversation = {
   id: UUID;
   created_at: Date;
 } & TConversationPayload;
+
+export type THistory = {
+  generator: string;
+  message: string;
+};

@@ -9,10 +9,12 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { IterableReadableStream } from "@langchain/core/utils/stream";
+import { THistory } from "../types/types";
 
 export const promptParser: (
-  question: string
-) => Promise<IterableReadableStream<string>> = async (question) => {
+  question: string,
+  history: THistory[]
+) => Promise<IterableReadableStream<string>> = async (question, history) => {
   const llmOpenAI = new ChatOpenAI({
     openAIApiKey: config.OPENAI_API_KEY,
   });
@@ -39,6 +41,7 @@ export const promptParser: (
   const answerTemplate = `You are a helpful and enthusiastic chat bot who can answer the provided question based on context provided. Try to find the answer in the context. If you really can't find the answer, you can say "I'm sorry, I don't know answer to that". Don't try to make up the answer. Always speak as if you are chatting with a friend.
   context : {context}
   question : {question}
+  history : {history}
   answer:`;
   const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
   const answerChain = RunnableSequence.from([
@@ -56,11 +59,17 @@ export const promptParser: (
     {
       context: retriverChain,
       question: ({ original_question }) => original_question?.question,
+      history: ({ original_question }) => original_question?.history,
     },
     answerChain,
   ]);
   const response = await chain.stream({
     question,
+    history: history
+      ?.map((h) => {
+        return `${h?.generator} : ${h?.message} \n`;
+      })
+      .join("\n"),
   });
   return response;
 };

@@ -1,6 +1,6 @@
 import { supabase } from "../config/supabase";
 import { Relations } from "../data/constants";
-import { TMessage, TMessagePayload } from "../types/types";
+import { THistory, TMessage, TMessagePayload } from "../types/types";
 
 export const postMessage: (
   data: TMessagePayload[]
@@ -9,6 +9,22 @@ export const postMessage: (
     .from(Relations.MESSAGE)
     .insert(payload)
     .select("*");
+
+  if (error) {
+    console.log(error);
+    throw new Error(`${error.code} | ${error.message}`);
+  }
+
+  return data;
+};
+
+export const getMessages = async (
+  conversation: number
+): Promise<THistory[] | null> => {
+  const { data, error } = await supabase
+    .from(Relations.MESSAGE)
+    .select("generator, message")
+    .eq("chat", conversation);
 
   if (error) {
     console.log(error);
