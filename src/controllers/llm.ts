@@ -3,6 +3,7 @@ import { TAuthenticatedRequest, THistory } from "../types/types";
 import { getConversation } from "../services/conversation";
 import { promptParser } from "../llm";
 import { getMessagesHistory, postMessage } from "../services/message";
+import { UUID } from "crypto";
 
 export const conversationWithLlm = async (
   req: TAuthenticatedRequest,
@@ -23,7 +24,7 @@ export const conversationWithLlm = async (
 
   const conversation =
     conversationId &&
-    (await getConversation(conversationId, Number(req.user?.id)));
+    (await getConversation(conversationId, req.user?.id as UUID));
 
   const history = conversation?.id
     ? await getMessagesHistory(conversationId)

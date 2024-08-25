@@ -2,7 +2,7 @@ import { AuthContextType, useAuthContext } from "../context/AuthContext";
 import { query } from "../api/api";
 import { TConversation } from "../types/types";
 import { useQuery } from "react-query";
-import { DB } from "../data/constant";
+import { ROUTES } from "../data/constant";
 import { NavLink } from "react-router-dom";
 
 const SideBar = () => {
@@ -10,7 +10,7 @@ const SideBar = () => {
 
   const { data: conversation, isLoading } = useQuery(
     ["conversation", isLoggedin],
-    () => query<TConversation[]>(DB.CONVERSATION),
+    () => query<TConversation[]>(ROUTES.CONVERSATION),
     {
       enabled: isLoggedin,
     }

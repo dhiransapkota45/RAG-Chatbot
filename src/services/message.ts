@@ -46,12 +46,11 @@ export const getAllMessagesService = async (
     .from(Relations.MESSAGE)
     .select("*")
     .eq("chat", chatid)
+    .order("created_at", { ascending: false })
     .range((pagesData - 1) * limitData, pagesData * limitData - 1);
 
   if (error) {
-    console.log(error);
     throw new Error(`${error.code} | ${error.message}`);
   }
-
   return data;
 };

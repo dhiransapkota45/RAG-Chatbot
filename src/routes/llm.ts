@@ -4,7 +4,6 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { config } from "../config/config";
 import { getConversation, postConversation } from "../services/conversation";
 import { TAuthenticatedRequest, TConversation } from "../types/types";
-import { UUID } from "crypto";
 import { postMessage } from "../services/message";
 import authMiddleware from "../middleware/authmiddleware";
 import { conversationWithLlm } from "../controllers/llm";

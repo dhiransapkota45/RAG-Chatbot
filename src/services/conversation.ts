@@ -18,7 +18,7 @@ export const postConversation: (
   return data;
 };
 
-export const getConversation = async (id: UUID, userid: number) => {
+export const getConversation = async (id: Number, userid: UUID) => {
   const { data, error } = await supabase
     .from(Relations.CONVERSATION)
     .select("*")

@@ -22,6 +22,10 @@ export type TMessage = {
   generator: string;
   message: string;
 };
+export type TMessageResponse = {
+  message: string;
+  data: TMessage[];
+};
 
 export type TConversationPayload = {
   prompt: string;

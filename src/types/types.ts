@@ -1,5 +1,4 @@
 import { User } from "@supabase/supabase-js";
-import { UUID } from "crypto";
 import { Request } from "express";
 
 export type queryType = {
@@ -16,21 +15,21 @@ export type TAuthenticatedRequest = Request & { user?: User };
 export type TMessagePayload = {
   generator: "user" | "assistant";
   message: string;
-  chat: UUID;
+  chat: Number;
 };
 
 export type TMessage = {
   created_at: Date;
-  id: UUID;
+  id: Number;
 } & TMessagePayload;
 
 export type TConversationPayload = {
-  user: UUID;
+  user: Number;
   title: string;
 };
 
 export type TConversation = {
-  id: UUID;
+  id: Number;
   created_at: Date;
 } & TConversationPayload;
 

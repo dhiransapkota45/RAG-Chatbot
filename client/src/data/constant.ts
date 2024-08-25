@@ -1,4 +1,4 @@
-export const DB = {
-    CONVERSATION: 'conversation',
-    CHAT : 'chat',
-}
+export const ROUTES = {
+  CONVERSATION: "conversation",
+  MESSAGE: "message",
+};
