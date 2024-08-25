@@ -2,7 +2,7 @@ import { Response } from "express";
 import { TAuthenticatedRequest, THistory } from "../types/types";
 import { getConversation } from "../services/conversation";
 import { promptParser } from "../llm";
-import { getMessages, postMessage } from "../services/message";
+import { getMessagesHistory, postMessage } from "../services/message";
 
 export const conversationWithLlm = async (
   req: TAuthenticatedRequest,
@@ -22,9 +22,12 @@ export const conversationWithLlm = async (
   const conversationId = req?.body?.conversationId;
 
   const conversation =
-    conversationId && (await getConversation(conversationId));
+    conversationId &&
+    (await getConversation(conversationId, Number(req.user?.id)));
 
-  const history = conversation?.id ? await getMessages(conversationId) : [];
+  const history = conversation?.id
+    ? await getMessagesHistory(conversationId)
+    : [];
 
   const stream = await promptParser(req.body.prompt, history || []);
 

@@ -18,13 +18,35 @@ export const postMessage: (
   return data;
 };
 
-export const getMessages = async (
+export const getMessagesHistory = async (
   conversation: number
 ): Promise<THistory[] | null> => {
   const { data, error } = await supabase
     .from(Relations.MESSAGE)
     .select("generator, message")
     .eq("chat", conversation);
+
+  if (error) {
+    console.log(error);
+    throw new Error(`${error.code} | ${error.message}`);
+  }
+
+  return data;
+};
+
+export const getAllMessagesService = async (
+  chatid: number,
+  limit: number,
+  page: number
+): Promise<TMessage[] | null> => {
+  const limitData = Number(limit) || 10;
+  const pagesData = Number(page) || 1;
+
+  const { data, error } = await supabase
+    .from(Relations.MESSAGE)
+    .select("*")
+    .eq("chat", chatid)
+    .range((pagesData - 1) * limitData, pagesData * limitData - 1);
 
   if (error) {
     console.log(error);

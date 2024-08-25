@@ -18,11 +18,12 @@ export const postConversation: (
   return data;
 };
 
-export const getConversation = async (id: UUID) => {
+export const getConversation = async (id: UUID, userid: number) => {
   const { data, error } = await supabase
     .from(Relations.CONVERSATION)
     .select("*")
     .eq("id", id)
+    .eq("user", userid)
     .single();
   if (error) {
     throw new Error(`${error.code} | ${error.message}`);
