@@ -1,20 +1,31 @@
-import { useContext } from "react";
 import ChatContainer from "./components/ChatContainer";
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
-import { AuthContext, AuthContextType } from "./context/AuthContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Routes, Route } from "react-router-dom";
+
+const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoggedin } = useContext(AuthContext) as AuthContextType;
-  console.log(isLoggedin)
   return (
-  <div className="flex h-screen overflow-hidden ">
-    <SideBar />
-    <div className="flex-1  overflow-hidden flex flex-col  ">
-      <Navbar />
-      <ChatContainer />
-    </div>
-  </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="flex h-screen overflow-hidden ">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <SideBar />
+                <div className="flex-1  overflow-hidden flex flex-col  ">
+                  <Navbar />
+                  <ChatContainer />
+                </div>
+              </>
+            }
+          />
+        </Routes>
+      </div>
+    </QueryClientProvider>
   );
 };
 

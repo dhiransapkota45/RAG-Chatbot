@@ -1,16 +1,26 @@
-import { Response, Router } from "express";
+import { Request, Response, Router, NextFunction } from "express";
 import { promptParser } from "../llm";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { config } from "../config/config";
 import { getConversation, postConversation } from "../services/conversation";
 import { TAuthenticatedRequest, TConversation } from "../types/types";
-import { UUID } from "crypto";
 import { postMessage } from "../services/message";
 import authMiddleware from "../middleware/authmiddleware";
 import { conversationWithLlm } from "../controllers/llm";
+import asyncUtil from "../middleware/globalError";
 const router = Router();
 
-router.post("/prompt", authMiddleware, conversationWithLlm);
+router.post(
+  "/prompt",
+  (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.conversationId) {
+      return authMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  asyncUtil(conversationWithLlm)
+);
 
 router.get("/getgemini", async (req, res) => {
   try {

@@ -6,12 +6,13 @@ import {
   getAllMessages,
   updateMessage,
 } from "../controllers/message";
+import asyncUtil from "../middleware/globalError";
 
 const router = Router();
 
-router.get("/", authMiddleware, getAllMessages);
-router.post("/", authMiddleware, createMessage);
-router.delete("/:id", authMiddleware, deleteMessage);
-router.put("/:id", authMiddleware, updateMessage);
+router.get("/", authMiddleware, asyncUtil(getAllMessages));
+router.post("/", authMiddleware, asyncUtil(createMessage));
+router.delete("/:id", authMiddleware, asyncUtil(deleteMessage));
+router.put("/:id", authMiddleware, asyncUtil(updateMessage));
 
 export default router;

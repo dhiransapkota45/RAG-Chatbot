@@ -2,6 +2,9 @@ import { Response } from "express";
 import { TAuthenticatedRequest } from "../types/types";
 import { Relations } from "../data/constants";
 import { supabase } from "../config/supabase";
+import { getAllMessagesService } from "../services/message";
+import { getConversation } from "../services/conversation";
+import { UUID } from "crypto";
 
 export const getAllMessages = async (
   req: TAuthenticatedRequest,
@@ -9,15 +12,14 @@ export const getAllMessages = async (
 ) => {
   const limit = Number(req.query.limit) || 10;
   const page = Number(req.query.page) || 1;
-  const response = await supabase
-    .from(Relations.MESSAGE)
-    .select("*")
-    .eq("user", req?.user?.id)
-    .range((page - 1) * limit, page * limit - 1);
 
-  return res
-    .status(200)
-    .json({ data: response.data, message: "Messages retrieved successfully" });
+  const conversationid = req.query.conversation ?? "";
+  await getConversation(Number(conversationid), req?.user?.id as UUID);
+  const data = await getAllMessagesService(Number(conversationid), limit, page);
+  return res.status(200).json({
+    message: "Messages retrived successfully",
+    data,
+  });
 };
 
 export const createMessage = async (
