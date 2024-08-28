@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { createClient } from "@supabase/supabase-js";
-import { config } from "../config/config";
+import { config } from "./src/config/config";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { OpenAIEmbeddings } from "@langchain/openai";
 
