@@ -8,7 +8,7 @@
     "start": "ts-node src/index.ts",
     "runnable": "ts-node src/exploring_runnable.ts",
     "serve": "nodemon",
-    "upload" : "ts-node src/llm/supabase_knowledge_upload.ts"
+    "upload" : "ts-node supabase_knowledge_upload.ts"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
